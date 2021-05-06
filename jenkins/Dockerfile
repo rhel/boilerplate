@@ -12,6 +12,8 @@ USER jenkins
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
+HEALTHCHECK --interval=20s --retries=10 --timeout=30s \
+  CMD curl -f http://localhost:8080/ || exit 1
 ENTRYPOINT [ "docker-entrypoint.sh" ]
 
 # vim:set syntax=dockerfile:
