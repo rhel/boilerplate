@@ -51,7 +51,7 @@ esac
 SCRIPT_ROOT=$(dirname "$(readlink -f $0)")
 
 sudo apt-get update
-sudo apt-get install \
+sudo apt-get install -y \
   apt-transport-https \
   ca-certificates \
   curl \
@@ -63,7 +63,10 @@ cat <<EOF | sudo tee /etc/apt/sources.list.d/docker.list
 deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable
 EOF
 sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo apt-get install -y \
+  containerd.io \
+  docker-ce \
+  docker-ce-cli
 
 off stdout
 off stderr
