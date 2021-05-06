@@ -24,14 +24,24 @@ timestamps {
         println e.toString()
       }
 
-      sh """
-        docker run \
-          --detach \
-          --name $container \
-          --publish 8080:8080 \
-          --rm \
-            ${params.image}
-      """
+      withEnv([
+        sprintf("container=%s", container),
+        sprintf("image=%s", params.image),
+      ]) {
+        sh '''
+          consulHttpAddr=$(
+            docker inspect --format '{{ .NetworkSettings.IPAddress }}' consul-server
+          )
+          consulHttpPort=8500
+          docker run \
+            --detach \
+            --name $container \
+            --publish 8080:8080 \
+            --env CONSUL_HTTP_ADDR=${consulHttpAddr}:${consulHttpPort} \
+            --rm \
+              $image
+        '''
+      }
     }
   }
 }
