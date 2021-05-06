@@ -28,7 +28,7 @@ timestamps {
         docker run \
           --detach \
           --name $container \
-          --publish 127.0.0.1:9080:9080 \
+          --publish 8080:8080 \
           --rm \
             ${params.image}
       """
