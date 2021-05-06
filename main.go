@@ -17,7 +17,7 @@ type Service struct {
 }
 
 func (service *Service) Health(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("I'm fine. Thank you for asking!"))
+	fmt.Fprint(w, "I'm fine. Thank you for asking!")
 }
 
 func (service *Service) GetHandler(w http.ResponseWriter, r *http.Request) {
@@ -31,11 +31,11 @@ func (service *Service) GetHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if pair == nil {
-		fmt.Fprintln(os.Stderr, fmt.Sprintf("%v = nil", key))
+		fmt.Fprintln(os.Stderr, fmt.Sprintf("%s = nil", key))
 		http.Error(w, "", http.StatusNotFound)
 		return
 	}
-	fmt.Fprintln(os.Stdout, fmt.Sprintf("%v = %s", pair.Key, pair.Value))
+	fmt.Fprintln(os.Stdout, fmt.Sprintf("%s = %s", pair.Key, pair.Value))
 	w.Write(pair.Value)
 }
 
@@ -64,9 +64,10 @@ func GetMyIP() (net.IP, error) {
 	}
 	defer udp.Close()
 
-	localAddr := udp.LocalAddr().(*net.UDPAddr)
+	localAddr := udp.LocalAddr()
+	udpAddr, err := net.ResolveUDPAddr(localAddr.Network(), localAddr.String())
 
-	return localAddr.IP, nil
+	return udpAddr.IP, err
 }
 
 func main() {
